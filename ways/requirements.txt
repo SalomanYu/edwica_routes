@@ -1,5 +1,5 @@
 pydantic
-fastapi
+fastapi==0.85.2
 uvicorn
 sqlalchemy
 python-dotenv

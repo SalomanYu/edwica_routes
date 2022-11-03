@@ -4,14 +4,16 @@ from pydantic import BaseModel
 
 from datetime import date
 
+
 class Step(BaseModel):
     profession: str
     deadline: str
 
-class BestwWay(BaseModel):
-    deadline: str #Стаж
+class Way(BaseModel):
+    deadline: str
     skills: list[str]
     steps: list[Step] 
+
 
 class DistinctWay(NamedTuple):
     similarId: int

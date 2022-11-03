@@ -1,6 +1,4 @@
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-
+from collections import Counter
 import sqlite3
 
 from services.config import settings
@@ -33,13 +31,13 @@ def get_resumes_by_name(profession:str, table_name: str, db_name: str = settings
     db.close()
     return group_steps_to_resume(data)
 
-def find_experiencePost(profession: str) -> tuple[ProfessionStep]:
-    db, cursor = connect()
-    query = f"SELECT resumeId FROM {settings.local_table_name} WHERE experiencePost='{profession}'"
-    cursor.execute(query)
-    resumeIds = [id[0] for id in cursor.fetchall()]
-    cursor.execute(f"SELECT * FROM {settings.local_table_name} WHERE resumeId IN {resumeIds}")
-    data = (ProfessionStep(*(*item[1:], item[0])) for item in cursor.fetchall()) 
+
+def find_all_resume_title_where_has_this_profession(profession: str, db_name: str = settings.local_database_path) -> list[str]:
+    db, cursor = connect(db_name)
+    cursor.execute(f"SELECT title FROM {settings.local_table_name} WHERE experiencePost='{profession}'")
+    data = (title[0] for title in cursor.fetchall())
     db.close()
-    exit(len(data))
-    return data
+    counter = Counter(data)
+    sorted_data = sorted(counter, key=counter.get, reverse=True)
+    return sorted_data
+
